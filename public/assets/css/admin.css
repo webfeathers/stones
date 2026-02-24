@@ -320,6 +320,82 @@ img { max-width: 100%; height: auto; }
 }
 
 .inline-form { display: inline-block; }
+.delete-form { margin-left: auto; }
+
+/* Collapsible Form Cards */
+.form-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.form-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--transition);
+    background: var(--color-bg);
+    border-bottom: 1px solid transparent;
+}
+
+.form-card-header:hover { background: #eeedf5; }
+
+.form-card-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.collapse-icon {
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
+    transition: transform 0.25s ease;
+    font-weight: bold;
+}
+
+.collapsible .form-card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 1.25rem;
+}
+
+.collapsible.open .form-card-body {
+    max-height: 2000px;
+    padding: 1rem 1.25rem 1.25rem;
+}
+
+.collapsible.open .form-card-header {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.collapsible.open .collapse-icon {
+    transform: rotate(90deg);
+}
+
+.form-card:not(.collapsible) .form-card-body {
+    padding: 1.25rem;
+}
+
+/* Field grid inside sections — compact 2-column layout */
+.field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+}
+
+.field-grid .form-group { margin-bottom: 0; }
+.field-grid .form-group-full { grid-column: 1 / -1; }
+
+@media (max-width: 600px) {
+    .field-grid { grid-template-columns: 1fr; }
+}
 
 /* Buttons */
 .btn {
