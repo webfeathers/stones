@@ -1,0 +1,18 @@
+# Uploads (user content - don't version control)
+public/uploads/originals/*
+public/uploads/thumbs/*
+!public/uploads/originals/.gitkeep
+!public/uploads/thumbs/.gitkeep
+
+# Config with credentials
+app/config.php
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
