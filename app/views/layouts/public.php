@@ -32,7 +32,7 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; <?= date('Y') ?> Gem &amp; Mineral Collection</p>
+            <p>&copy; <?= date('Y') ?> Gem &amp; Mineral Collection &nbsp;·&nbsp; <a href="/admin">Admin</a></p>
         </div>
     </footer>
 
