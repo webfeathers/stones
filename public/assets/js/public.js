@@ -113,6 +113,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ============================================
+    // Mobile filter toggle
+    // ============================================
+    var filterToggle = document.getElementById('filter-toggle');
+    var filterSidebar = document.getElementById('filter-sidebar');
+    if (filterToggle && filterSidebar) {
+        filterToggle.addEventListener('click', function () {
+            filterSidebar.classList.toggle('open');
+            filterToggle.textContent = filterSidebar.classList.contains('open')
+                ? '✕ Hide Filters'
+                : '☰ Filters';
+        });
+        // Auto-open if filters are active
+        var params = new URLSearchParams(window.location.search);
+        var hasFilters = false;
+        params.forEach(function (val, key) {
+            if (key.startsWith('filter_') && val) hasFilters = true;
+        });
+        if (hasFilters) {
+            filterSidebar.classList.add('open');
+            filterToggle.textContent = '✕ Hide Filters';
+        }
+    }
+
+    // ============================================
     // Multi-select filter checkboxes
     // ============================================
     document.querySelectorAll('.multi-filter-cb').forEach(function (cb) {

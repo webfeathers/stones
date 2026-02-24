@@ -95,7 +95,7 @@ foreach ($fields as $field) {
                 <div class="form-group">
                     <label class="checkbox-label">
                         <input type="checkbox" name="is_published" value="1"
-                               <?= ($isEdit && $specimen['is_published']) ? 'checked' : '' ?>>
+                               <?= (!$isEdit || $specimen['is_published']) ? 'checked' : '' ?>>
                         Published (visible to public)
                     </label>
                 </div>

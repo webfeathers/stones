@@ -3,7 +3,10 @@
 <div class="gallery-layout">
     <!-- Filter Sidebar -->
     <?php if (!empty($filterableFields)): ?>
-    <aside class="filter-sidebar">
+    <button class="filter-toggle-btn" id="filter-toggle">
+        <span class="filter-toggle-icon">☰</span> Filters
+    </button>
+    <aside class="filter-sidebar" id="filter-sidebar">
         <h3>Filter</h3>
         <form method="GET" action="/" id="filter-form">
             <?php foreach ($filterableFields as $field): ?>
