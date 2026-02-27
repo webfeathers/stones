@@ -149,8 +149,53 @@ class AdminController
 
         Specimen::saveFieldValues($id, $processedValues);
 
-        flash('success', 'Specimen saved successfully.');
-        redirect("/admin/specimens/{$id}/edit");
+        // Handle photo uploads (for new specimens)
+        $files = $_FILES['photos'] ?? null;
+        if ($files && !empty($files['name'][0])) {
+            // Normalize single/multiple file uploads
+            if (!is_array($files['name'])) {
+                $files = [
+                    'name'     => [$files['name']],
+                    'type'     => [$files['type']],
+                    'tmp_name' => [$files['tmp_name']],
+                    'error'    => [$files['error']],
+                    'size'     => [$files['size']],
+                ];
+            }
+
+            $uploadCount = 0;
+            $count = count($files['name']);
+            for ($i = 0; $i < $count; $i++) {
+                $file = [
+                    'name'     => $files['name'][$i],
+                    'type'     => $files['type'][$i],
+                    'tmp_name' => $files['tmp_name'][$i],
+                    'error'    => $files['error'][$i],
+                    'size'     => $files['size'][$i],
+                ];
+
+                $result = processUpload($file, $id);
+                if ($result) {
+                    Photo::create($id, $result);
+                    $uploadCount++;
+                }
+            }
+
+            if ($uploadCount > 0) {
+                flash('success', "Specimen saved with {$uploadCount} photo(s).");
+            } else {
+                flash('success', 'Specimen saved successfully.');
+            }
+        } else {
+            flash('success', 'Specimen saved successfully.');
+        }
+
+        // "Save & Add Another" redirects to a fresh create form
+        if (isset($_POST['add_another'])) {
+            redirect('/admin/specimens/create');
+        } else {
+            redirect("/admin/specimens/{$id}/edit");
+        }
     }
 
     public static function specimenDelete(int $id): void

@@ -15,7 +15,7 @@ $sections = [
     'basics' => [
         'label' => '🪨 Basics',
         'open' => true,
-        'fields' => ['type', 'specimen_form', 'aka', 'location', 'display_options', 'identifier_key'],
+        'fields' => ['type', 'display_options', 'specimen_form', 'location', 'identifier_key'],
     ],
     'physical' => [
         'label' => '📐 Size & Weight',
@@ -68,11 +68,11 @@ foreach ($fields as $field) {
 
 <?php if (!$isEdit): ?>
     <p class="section-description">
-        Only the <strong>Name</strong> is required. Fill in as much or as little as you want — you can always come back and add more later. After saving, you'll be able to upload photos.
+        Only the <strong>Name</strong> is required. Fill in as much or as little as you want — you can always come back and add more later.
     </p>
 <?php endif; ?>
 
-<form method="POST" action="<?= $isEdit ? "/admin/specimens/{$specimen['id']}/edit" : '/admin/specimens/create' ?>" class="specimen-form">
+<form method="POST" action="<?= $isEdit ? "/admin/specimens/{$specimen['id']}/edit" : '/admin/specimens/create' ?>" class="specimen-form" enctype="multipart/form-data">
     <?= Auth::csrfField() ?>
 
     <!-- Core fields — always visible -->
@@ -84,6 +84,20 @@ foreach ($fields as $field) {
                        value="<?= e($isEdit ? $specimen['name'] : '') ?>"
                        class="form-input" placeholder="e.g. Amethyst Cluster from Brazil">
             </div>
+
+            <?php
+            // Render AKA field right under Name
+            if (isset($fieldsByName['aka'])) {
+                $akaField = $fieldsByName['aka'];
+                $akaValue = $currentValues[$akaField['id']] ?? '';
+            ?>
+            <div class="form-group">
+                <label for="field_<?= $akaField['id'] ?>">AKA</label>
+                <input type="text" id="field_<?= $akaField['id'] ?>" name="fields[<?= $akaField['id'] ?>]"
+                       value="<?= e($akaValue) ?>" class="form-input"
+                       placeholder="Other names for this specimen">
+            </div>
+            <?php } ?>
 
             <div class="form-group">
                 <label for="description">Description</label>
@@ -140,6 +154,15 @@ foreach ($fields as $field) {
                         $value = $currentValues[$fieldId] ?? '';
                         $required = $field['is_required'] ? 'required' : '';
                         $options = !empty($field['options_json']) ? json_decode($field['options_json'], true) : [];
+
+                        // Apply defaults for new specimens
+                        if (!$isEdit && $value === '') {
+                            $value = match($fieldName) {
+                                'type' => 'Mineral',
+                                'display_options' => 'Collection Case',
+                                default => '',
+                            };
+                        }
 
                         // Determine if this is a compact field
                         $isCompact = in_array($field['field_type'], ['number', 'date', 'select', 'color']);
@@ -215,8 +238,34 @@ foreach ($fields as $field) {
         </div>
     <?php endforeach; ?>
 
+    <!-- Photos -->
+    <?php if (!$isEdit): ?>
+        <div class="form-card collapsible open">
+            <div class="form-card-header" onclick="this.parentElement.classList.toggle('open')">
+                <h3>📷 Photos</h3>
+                <span class="collapse-icon">›</span>
+            </div>
+            <div class="form-card-body">
+                <div class="upload-area upload-area-inline">
+                    <label for="photo-upload" class="upload-label">
+                        <span class="upload-icon">📷</span>
+                        <span>Click to choose photos or drag & drop</span>
+                        <small>JPG, PNG, WebP, GIF — max 10MB each</small>
+                    </label>
+                    <input type="file" id="photo-upload" name="photos[]" multiple
+                           accept="image/jpeg,image/png,image/webp,image/gif"
+                           class="upload-input">
+                    <div id="photo-preview" class="photo-preview-grid"></div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">Save Specimen</button>
+        <?php if (!$isEdit): ?>
+            <button type="submit" name="add_another" value="1" class="btn btn-secondary">Save & Add Another</button>
+        <?php endif; ?>
         <a href="/admin/specimens" class="btn btn-secondary">Cancel</a>
 
         <?php if ($isEdit): ?>

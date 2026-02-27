@@ -9,20 +9,38 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============================================
     var uploadInput = document.getElementById('photo-upload');
     if (uploadInput) {
-        var uploadBtn = uploadInput.closest('form').querySelector('.upload-btn');
-        var uploadLabel = uploadInput.closest('form').querySelector('.upload-label span:first-of-type');
+        var uploadBtn = uploadInput.closest('form') ? uploadInput.closest('form').querySelector('.upload-btn') : null;
+        var uploadLabel = uploadInput.closest('.upload-area, .upload-area-inline');
+        var labelText = uploadLabel ? uploadLabel.querySelector('.upload-label span:first-of-type') : null;
+        var previewGrid = document.getElementById('photo-preview');
 
         uploadInput.addEventListener('change', function () {
             if (this.files.length > 0) {
-                uploadBtn.style.display = 'inline-block';
-                var names = [];
-                for (var i = 0; i < Math.min(this.files.length, 5); i++) {
-                    names.push(this.files[i].name);
+                if (uploadBtn) uploadBtn.style.display = 'inline-block';
+                if (labelText) {
+                    var names = [];
+                    for (var i = 0; i < Math.min(this.files.length, 5); i++) {
+                        names.push(this.files[i].name);
+                    }
+                    if (this.files.length > 5) {
+                        names.push('... and ' + (this.files.length - 5) + ' more');
+                    }
+                    labelText.textContent = names.join(', ');
                 }
-                if (this.files.length > 5) {
-                    names.push('... and ' + (this.files.length - 5) + ' more');
+                // Show thumbnail previews
+                if (previewGrid) {
+                    previewGrid.innerHTML = '';
+                    for (var i = 0; i < this.files.length; i++) {
+                        if (this.files[i].type.startsWith('image/')) {
+                            var img = document.createElement('img');
+                            img.file = this.files[i];
+                            previewGrid.appendChild(img);
+                            var reader = new FileReader();
+                            reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+                            reader.readAsDataURL(this.files[i]);
+                        }
+                    }
                 }
-                uploadLabel.textContent = names.join(', ');
             }
         });
 
@@ -36,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ============================================
     // Drag and drop file upload
     // ============================================
-    var uploadArea = document.querySelector('.upload-area');
+    var uploadArea = document.querySelector('.upload-area, .upload-area-inline');
     if (uploadArea && uploadInput) {
         ['dragenter', 'dragover'].forEach(function (event) {
             uploadArea.addEventListener(event, function (e) {
