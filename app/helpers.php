@@ -194,17 +194,21 @@ function processUpload(array $file, int $specimenId): ?array
         move_uploaded_file($file['tmp_name'], $upload['originals_dir'] . '/' . $filename);
     }
 
-    // Create thumbnail (square crop from center)
-    $thumbSize = $upload['thumbnail_width'];
-    $thumb = imagecreatetruecolor($thumbSize, $thumbSize);
-    preserveTransparency($thumb, $mime);
-
+    // Create thumbnail (fit within max dimensions, preserve aspect ratio)
+    $maxThumb = $upload['thumbnail_width'];
     $sourceForThumb = imageFromFile($upload['originals_dir'] . '/' . $filename, $mime);
-    $srcSize = min($origWidth, $origHeight);
-    $srcX = (int)(($origWidth - $srcSize) / 2);
-    $srcY = (int)(($origHeight - $srcSize) / 2);
 
-    imagecopyresampled($thumb, $sourceForThumb, 0, 0, $srcX, $srcY, $thumbSize, $thumbSize, $srcSize, $srcSize);
+    if ($origWidth > $origHeight) {
+        $thumbW = $maxThumb;
+        $thumbH = (int)($origHeight * ($maxThumb / $origWidth));
+    } else {
+        $thumbH = $maxThumb;
+        $thumbW = (int)($origWidth * ($maxThumb / $origHeight));
+    }
+
+    $thumb = imagecreatetruecolor($thumbW, $thumbH);
+    preserveTransparency($thumb, $mime);
+    imagecopyresampled($thumb, $sourceForThumb, 0, 0, 0, 0, $thumbW, $thumbH, $origWidth, $origHeight);
     saveImage($thumb, $upload['thumbs_dir'] . '/' . $filename, $mime);
 
     imagedestroy($source);
