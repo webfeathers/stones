@@ -267,16 +267,18 @@ foreach ($fields as $field) {
             <button type="submit" name="add_another" value="1" class="btn btn-secondary">Save & Add Another</button>
         <?php endif; ?>
         <a href="/admin/specimens" class="btn btn-secondary">Cancel</a>
-
-        <?php if ($isEdit): ?>
-            <form method="POST" action="/admin/specimens/<?= $specimen['id'] ?>/delete"
-                  class="inline-form delete-form" onsubmit="return confirm('Delete this specimen and all its photos? This cannot be undone.')">
-                <?= Auth::csrfField() ?>
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-        <?php endif; ?>
     </div>
 </form>
+
+<?php if ($isEdit): ?>
+    <form method="POST" action="/admin/specimens/<?= $specimen['id'] ?>/delete"
+          class="inline-form delete-form" onsubmit="return confirm('Delete this specimen and all its photos? This cannot be undone.')">
+        <?= Auth::csrfField() ?>
+        <div class="form-actions form-actions-danger">
+            <button type="submit" class="btn btn-danger">Delete Specimen</button>
+        </div>
+    </form>
+<?php endif; ?>
 
 <?php
 // Helper for placeholder text

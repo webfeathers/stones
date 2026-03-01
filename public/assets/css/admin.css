@@ -318,6 +318,12 @@ img { max-width: 100%; height: auto; }
     padding-top: 1.5rem;
     border-top: 1px solid var(--color-border);
 }
+.form-actions-danger {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    justify-content: flex-end;
+}
 
 .inline-form { display: inline-block; }
 .delete-form { margin-left: auto; }
@@ -491,7 +497,9 @@ img { max-width: 100%; height: auto; }
 .upload-input { display: none; }
 .upload-area-inline { padding: 1.5rem; margin-bottom: 0; border: none; }
 .photo-preview-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
-.photo-preview-grid img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--color-border); }
+.photo-preview-item { position: relative; }
+.photo-preview-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--color-border); display: block; }
+.photo-preview-remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; border: none; background: #dc2626; color: #fff; font-size: 14px; line-height: 20px; text-align: center; padding: 0; cursor: pointer; }
 
 /* Photo Grid (admin) */
 .photo-grid {

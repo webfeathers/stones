@@ -14,41 +14,71 @@ document.addEventListener('DOMContentLoaded', function () {
         var labelText = uploadLabel ? uploadLabel.querySelector('.upload-label span:first-of-type') : null;
         var previewGrid = document.getElementById('photo-preview');
 
-        uploadInput.addEventListener('change', function () {
-            if (this.files.length > 0) {
-                if (uploadBtn) uploadBtn.style.display = 'inline-block';
-                if (labelText) {
+        // Track selected files in a DataTransfer so we can add/remove
+        var selectedFiles = new DataTransfer();
+
+        function syncFilesToInput() {
+            uploadInput.files = selectedFiles.files;
+        }
+
+        function renderPreviews() {
+            if (!previewGrid) return;
+            previewGrid.innerHTML = '';
+            var files = selectedFiles.files;
+            if (labelText) {
+                if (files.length === 0) {
+                    labelText.textContent = 'Click to choose photos or drag & drop';
+                } else {
                     var names = [];
-                    for (var i = 0; i < Math.min(this.files.length, 5); i++) {
-                        names.push(this.files[i].name);
+                    for (var i = 0; i < Math.min(files.length, 5); i++) {
+                        names.push(files[i].name);
                     }
-                    if (this.files.length > 5) {
-                        names.push('... and ' + (this.files.length - 5) + ' more');
+                    if (files.length > 5) {
+                        names.push('... and ' + (files.length - 5) + ' more');
                     }
                     labelText.textContent = names.join(', ');
                 }
-                // Show thumbnail previews
-                if (previewGrid) {
-                    previewGrid.innerHTML = '';
-                    for (var i = 0; i < this.files.length; i++) {
-                        if (this.files[i].type.startsWith('image/')) {
-                            var img = document.createElement('img');
-                            img.file = this.files[i];
-                            previewGrid.appendChild(img);
-                            var reader = new FileReader();
-                            reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
-                            reader.readAsDataURL(this.files[i]);
+            }
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].type.startsWith('image/')) {
+                    var wrapper = document.createElement('div');
+                    wrapper.className = 'photo-preview-item';
+                    var img = document.createElement('img');
+                    img.file = files[i];
+                    var removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'photo-preview-remove';
+                    removeBtn.textContent = '\u00d7';
+                    removeBtn.dataset.index = i;
+                    removeBtn.addEventListener('click', function () {
+                        var idx = parseInt(this.dataset.index);
+                        var newDt = new DataTransfer();
+                        for (var j = 0; j < selectedFiles.files.length; j++) {
+                            if (j !== idx) newDt.items.add(selectedFiles.files[j]);
                         }
-                    }
+                        selectedFiles = newDt;
+                        syncFilesToInput();
+                        renderPreviews();
+                    });
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(removeBtn);
+                    previewGrid.appendChild(wrapper);
+                    var reader = new FileReader();
+                    reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
+                    reader.readAsDataURL(files[i]);
                 }
             }
-        });
-
-        // Also allow camera capture on mobile - add capture attribute
-        if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-            // Don't set capture attribute - let the user choose between camera and gallery
-            // The accept attribute already handles this well on mobile
         }
+
+        uploadInput.addEventListener('change', function () {
+            // Append newly chosen files to our tracked set
+            for (var i = 0; i < this.files.length; i++) {
+                selectedFiles.items.add(this.files[i]);
+            }
+            syncFilesToInput();
+            renderPreviews();
+            if (uploadBtn && selectedFiles.files.length > 0) uploadBtn.style.display = 'inline-block';
+        });
     }
 
     // ============================================
@@ -73,8 +103,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         uploadArea.addEventListener('drop', function (e) {
-            uploadInput.files = e.dataTransfer.files;
-            uploadInput.dispatchEvent(new Event('change'));
+            var droppedFiles = e.dataTransfer.files;
+            for (var i = 0; i < droppedFiles.length; i++) {
+                selectedFiles.items.add(droppedFiles[i]);
+            }
+            syncFilesToInput();
+            renderPreviews();
         });
     }
 
