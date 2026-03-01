@@ -125,7 +125,7 @@ INSERT INTO `custom_fields` (`field_name`, `label`, `field_type`, `options_json`
 -- Core identification
 ('identifier_key', 'Identifier Key', 'text', NULL, 0, 0, 1, 1),
 ('type', 'Type', 'select', '["Mineral","Fossil","Meteorite","Beach Rock"]', 1, 1, 1, 2),
-('specimen_form', 'Specimen Form', 'select', '["Raw","Slab Cut Raw","Slab Cut Polished","Tumbled","Crystal Point","Crystal Cluster"]', 0, 1, 1, 3),
+('specimen_form', 'Specimen Form', 'select', '["Raw","Slab Cut Raw","Slab Cut Polished","Tumbled","Crystal Point","Crystal Cluster","Carved Stone","Geode","Cut Gem","Cabochon","Worry Stone","Candle Holder","Book End"]', 0, 1, 1, 3),
 ('location', 'Location', 'text', NULL, 0, 1, 1, 4),
 ('display_options', 'Display Options', 'select', '["Collection Case","Small Square Box","Small Circle Box","Stand","Glass","Specimen Case (in Collection Case)","House","Outside"]', 0, 1, 0, 5),
 ('aka', 'AKA', 'text', NULL, 0, 0, 1, 6),
