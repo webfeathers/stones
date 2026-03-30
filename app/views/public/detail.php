@@ -48,7 +48,12 @@
 
         <!-- Info -->
         <div class="detail-info">
-            <h1><?= e($specimen['name']) ?></h1>
+            <h1>
+                <?= e($specimen['name']) ?>
+                <?php if (Auth::check()): ?>
+                    <a href="/admin/specimens/<?= $specimen['id'] ?>/edit" class="edit-link">Edit</a>
+                <?php endif; ?>
+            </h1>
 
             <?php if (!empty($specimen['description'])): ?>
                 <div class="detail-description">
