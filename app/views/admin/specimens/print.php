@@ -72,14 +72,16 @@
         }
         @media print {
             .print-bar { display: none; }
-            body { padding: 0; }
+            body { padding: 0.25in; }
             .grid { gap: 0.3rem; }
+            @page { margin: 0.25in; }
         }
     </style>
 </head>
 <body>
     <div class="print-bar">
         <button onclick="window.print()">Print</button>
+        <a href="/admin/specimens/export">Export CSV</a>
         <a href="/admin/specimens">Back to List</a>
     </div>
     <h1>Specimen Collection (<?= count($result['items']) ?>)</h1>

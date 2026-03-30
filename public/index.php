@@ -74,6 +74,10 @@ $router->get('/admin/specimens/print', function () {
     AdminController::specimenPrint();
 });
 
+$router->get('/admin/specimens/export', function () {
+    AdminController::specimenExport();
+});
+
 $router->get('/admin/specimens/create', function () {
     AdminController::specimenForm();
 });

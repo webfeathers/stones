@@ -230,6 +230,24 @@ class AdminController
         require __DIR__ . '/../views/admin/specimens/print.php';
     }
 
+    public static function specimenExport(): void
+    {
+        Auth::requireLogin();
+
+        $result = Specimen::paginate(1, 10000, false);
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="specimens.csv"');
+
+        $out = fopen('php://output', 'w');
+        fputcsv($out, ['Name']);
+        foreach ($result['items'] as $s) {
+            fputcsv($out, [$s['name']]);
+        }
+        fclose($out);
+        exit;
+    }
+
     // ============================================
     // Photos
     // ============================================
