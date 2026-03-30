@@ -29,7 +29,7 @@
             <?php endforeach; ?>
         </div>
 
-        <?= pagination($total, $perPage, $page, '/search?q=' . urlencode($query)) ?>
+        <?= pagination($total, $perPage, $page, '/search', ['q' => $query]) ?>
     <?php endif; ?>
 <?php else: ?>
     <p class="empty-state">Enter a search term to find specimens.</p>

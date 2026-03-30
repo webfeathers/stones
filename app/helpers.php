@@ -105,37 +105,43 @@ function currentPage(): int
 /**
  * Generate pagination HTML
  */
-function pagination(int $total, int $perPage, int $currentPage, string $baseUrl): string
+function pagination(int $total, int $perPage, int $currentPage, string $baseUrl, array $extraParams = []): string
 {
     $totalPages = (int)ceil($total / $perPage);
     if ($totalPages <= 1) return '';
 
+    // Build page URL preserving extra query params
+    $buildUrl = function (int $page) use ($baseUrl, $extraParams): string {
+        $params = array_merge($extraParams, ['page' => $page]);
+        return $baseUrl . '?' . http_build_query($params);
+    };
+
     $html = '<nav class="pagination">';
 
     if ($currentPage > 1) {
-        $html .= '<a href="' . $baseUrl . '?page=' . ($currentPage - 1) . '" class="page-link">&laquo; Prev</a>';
+        $html .= '<a href="' . $buildUrl($currentPage - 1) . '" class="page-link">&laquo; Prev</a>';
     }
 
     $start = max(1, $currentPage - 3);
     $end = min($totalPages, $currentPage + 3);
 
     if ($start > 1) {
-        $html .= '<a href="' . $baseUrl . '?page=1" class="page-link">1</a>';
+        $html .= '<a href="' . $buildUrl(1) . '" class="page-link">1</a>';
         if ($start > 2) $html .= '<span class="page-ellipsis">&hellip;</span>';
     }
 
     for ($i = $start; $i <= $end; $i++) {
         $active = $i === $currentPage ? ' active' : '';
-        $html .= '<a href="' . $baseUrl . '?page=' . $i . '" class="page-link' . $active . '">' . $i . '</a>';
+        $html .= '<a href="' . $buildUrl($i) . '" class="page-link' . $active . '">' . $i . '</a>';
     }
 
     if ($end < $totalPages) {
         if ($end < $totalPages - 1) $html .= '<span class="page-ellipsis">&hellip;</span>';
-        $html .= '<a href="' . $baseUrl . '?page=' . $totalPages . '" class="page-link">' . $totalPages . '</a>';
+        $html .= '<a href="' . $buildUrl($totalPages) . '" class="page-link">' . $totalPages . '</a>';
     }
 
     if ($currentPage < $totalPages) {
-        $html .= '<a href="' . $baseUrl . '?page=' . ($currentPage + 1) . '" class="page-link">Next &raquo;</a>';
+        $html .= '<a href="' . $buildUrl($currentPage + 1) . '" class="page-link">Next &raquo;</a>';
     }
 
     $html .= '</nav>';

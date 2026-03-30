@@ -1,11 +1,37 @@
+<?php
+    $paginationParams = $search !== '' ? ['q' => $search] : [];
+    $paginationHtml = pagination($total, $perPage, $page, '/admin/specimens', $paginationParams);
+?>
+
 <div class="section-header">
     <h2>Specimens (<?= $total ?>)</h2>
-    <a href="/admin/specimens/create" class="btn btn-primary">+ Add Specimen</a>
+    <div class="header-actions">
+        <form method="GET" action="/admin/specimens" class="admin-search-form">
+            <input type="text" name="q" value="<?= e($search) ?>" placeholder="Search specimens..." class="form-input form-input-search">
+            <button type="submit" class="btn btn-sm">Search</button>
+            <?php if ($search !== ''): ?>
+                <a href="/admin/specimens" class="btn btn-sm">Clear</a>
+            <?php endif; ?>
+        </form>
+        <a href="/admin/specimens/create" class="btn btn-primary">+ Add Specimen</a>
+    </div>
 </div>
 
+<?php if ($search !== ''): ?>
+    <p class="search-result-info"><?= $total ?> result<?= $total !== 1 ? 's' : '' ?> for "<?= e($search) ?>"</p>
+<?php endif; ?>
+
 <?php if (empty($specimens)): ?>
-    <p class="empty-state">No specimens yet. <a href="/admin/specimens/create">Add your first one!</a></p>
+    <p class="empty-state">
+        <?php if ($search !== ''): ?>
+            No specimens match your search.
+        <?php else: ?>
+            No specimens yet. <a href="/admin/specimens/create">Add your first one!</a>
+        <?php endif; ?>
+    </p>
 <?php else: ?>
+    <?= $paginationHtml ?>
+
     <table class="data-table">
         <thead>
             <tr>
@@ -43,5 +69,5 @@
         </tbody>
     </table>
 
-    <?= pagination($total, $perPage, $page, '/admin/specimens') ?>
+    <?= $paginationHtml ?>
 <?php endif; ?>

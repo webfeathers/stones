@@ -207,6 +207,34 @@ class Specimen
     }
 
     /**
+     * Search specimens for admin (includes drafts, searches name + description + field values)
+     */
+    public static function adminSearch(string $query, int $page = 1, int $perPage = 25): array
+    {
+        $offset = ($page - 1) * $perPage;
+        $like = '%' . $query . '%';
+
+        $sql = "SELECT DISTINCT s.*, p.filename AS photo_filename
+                FROM specimens s
+                LEFT JOIN photos p ON p.specimen_id = s.id AND p.is_primary = 1
+                LEFT JOIN specimen_field_values sfv ON sfv.specimen_id = s.id
+                WHERE (s.name LIKE ? OR s.description LIKE ? OR sfv.value LIKE ?)
+                ORDER BY s.name ASC
+                LIMIT ? OFFSET ?";
+
+        $items = Database::fetchAll($sql, [$like, $like, $like, $perPage, $offset]);
+
+        $countSql = "SELECT COUNT(DISTINCT s.id) as total
+                     FROM specimens s
+                     LEFT JOIN specimen_field_values sfv ON sfv.specimen_id = s.id
+                     WHERE (s.name LIKE ? OR s.description LIKE ? OR sfv.value LIKE ?)";
+
+        $total = Database::fetch($countSql, [$like, $like, $like])['total'];
+
+        return ['items' => $items, 'total' => (int)$total];
+    }
+
+    /**
      * Filter specimens by custom field values
      */
     public static function filter(array $filters, int $page = 1, int $perPage = 24): array

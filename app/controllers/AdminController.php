@@ -77,13 +77,21 @@ class AdminController
 
         $page = currentPage();
         $config = require __DIR__ . '/../config.php';
-        $result = Specimen::paginate($page, $config['per_page'], false);
+        $perPage = $config['admin_per_page'];
+        $search = trim($_GET['q'] ?? '');
+
+        if ($search !== '') {
+            $result = Specimen::adminSearch($search, $page, $perPage);
+        } else {
+            $result = Specimen::paginate($page, $perPage, false);
+        }
 
         view('admin/specimens/list', [
             'specimens' => $result['items'],
             'total'     => $result['total'],
             'page'      => $page,
-            'perPage'   => $config['per_page'],
+            'perPage'   => $perPage,
+            'search'    => $search,
         ], 'admin');
     }
 
