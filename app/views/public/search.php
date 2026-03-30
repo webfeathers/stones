@@ -10,6 +10,8 @@
     <?php if (empty($specimens)): ?>
         <p class="empty-state">No specimens found matching your search. Try different keywords.</p>
     <?php else: ?>
+        <?= pagination($total, $perPage, $page, '/search', ['q' => $query]) ?>
+
         <div class="gallery-grid">
             <?php foreach ($specimens as $s): ?>
                 <a href="/specimen/<?= e($s['slug']) ?>" class="gallery-card">
