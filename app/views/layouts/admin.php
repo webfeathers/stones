@@ -14,6 +14,7 @@
                 <a href="/admin" class="nav-link">Dashboard</a>
                 <a href="/admin/specimens" class="nav-link">Specimens</a>
                 <a href="/admin/fields" class="nav-link">Fields</a>
+                <a href="/admin/specimens/print" class="nav-link" target="_blank">Print List</a>
                 <a href="/" class="nav-link" target="_blank">View Site ↗</a>
                 <a href="/admin/logout" class="nav-link nav-logout">Logout</a>
             </div>
