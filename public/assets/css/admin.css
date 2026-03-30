@@ -608,6 +608,31 @@ img { max-width: 100%; height: auto; }
     margin-bottom: 1rem;
 }
 
+/* Duplicate names warning (dashboard) */
+.duplicate-warning {
+    background: var(--color-warning-light);
+    border-left: 4px solid var(--color-warning);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.duplicate-warning strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #92400e;
+}
+
+.duplicate-group {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.35rem;
+}
+
+.duplicate-group:last-child { margin-bottom: 0; }
+
 /* Name duplicate warning */
 .name-warning {
     color: var(--color-danger);

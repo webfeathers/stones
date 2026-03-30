@@ -47,12 +47,26 @@ class AdminController
         Auth::requireLogin();
 
         // Check for duplicate names
-        $duplicates = Database::fetchAll(
+        $dupGroups = Database::fetchAll(
             'SELECT LOWER(name) as lname, GROUP_CONCAT(id) as ids, COUNT(*) as cnt
              FROM specimens
              GROUP BY LOWER(name)
              HAVING cnt > 1'
         );
+
+        // Fetch actual specimen details for each duplicate
+        $duplicates = [];
+        foreach ($dupGroups as $group) {
+            $ids = explode(',', $group['ids']);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $duplicates[] = [
+                'name' => $group['lname'],
+                'specimens' => Database::fetchAll(
+                    "SELECT id, name FROM specimens WHERE id IN ($placeholders) ORDER BY name",
+                    $ids
+                ),
+            ];
+        }
 
         $stats = [
             'total_specimens'     => Specimen::count(),

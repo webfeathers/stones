@@ -20,12 +20,15 @@
 </div>
 
 <?php if (!empty($duplicates)): ?>
-<div class="alert alert-warning">
-    <strong>Duplicate names found:</strong>
-    <?php foreach ($duplicates as $dup): ?>
-        <?= e($dup['lname']) ?> (<?= $dup['cnt'] ?>x)<?= $dup !== end($duplicates) ? ', ' : '' ?>
+<div class="duplicate-warning">
+    <strong>Duplicate names found — please rename to make unique:</strong>
+    <?php foreach ($duplicates as $group): ?>
+        <div class="duplicate-group">
+            <?php foreach ($group['specimens'] as $s): ?>
+                <a href="/admin/specimens/<?= $s['id'] ?>/edit" class="btn btn-sm btn-warning"><?= e($s['name']) ?> (#<?= $s['id'] ?>)</a>
+            <?php endforeach; ?>
+        </div>
     <?php endforeach; ?>
-    — edit these in <a href="/admin/specimens">Specimens</a> to make names unique.
 </div>
 <?php endif; ?>
 
