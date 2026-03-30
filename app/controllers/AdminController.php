@@ -137,6 +137,18 @@ class AdminController
             redirect($id ? "/admin/specimens/{$id}/edit" : '/admin/specimens/create');
         }
 
+        // Check for duplicate name
+        $sql = 'SELECT id FROM specimens WHERE name = ?';
+        $params = [$data['name']];
+        if ($id) {
+            $sql .= ' AND id != ?';
+            $params[] = $id;
+        }
+        if (Database::fetch($sql, $params)) {
+            flash('error', 'A specimen with that name already exists. Please use a unique name.');
+            redirect($id ? "/admin/specimens/{$id}/edit" : '/admin/specimens/create');
+        }
+
         if ($id) {
             Specimen::update($id, $data);
         } else {
