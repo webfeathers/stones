@@ -46,6 +46,14 @@ class AdminController
     {
         Auth::requireLogin();
 
+        // Check for duplicate names
+        $duplicates = Database::fetchAll(
+            'SELECT LOWER(name) as lname, GROUP_CONCAT(id) as ids, COUNT(*) as cnt
+             FROM specimens
+             GROUP BY LOWER(name)
+             HAVING cnt > 1'
+        );
+
         $stats = [
             'total_specimens'     => Specimen::count(),
             'published_specimens' => Specimen::count(true),
@@ -62,8 +70,9 @@ class AdminController
         );
 
         view('admin/dashboard', [
-            'stats'  => $stats,
-            'recent' => $recent,
+            'stats'      => $stats,
+            'recent'     => $recent,
+            'duplicates' => $duplicates,
         ], 'admin');
     }
 

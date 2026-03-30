@@ -19,6 +19,16 @@
     </div>
 </div>
 
+<?php if (!empty($duplicates)): ?>
+<div class="alert alert-warning">
+    <strong>Duplicate names found:</strong>
+    <?php foreach ($duplicates as $dup): ?>
+        <?= e($dup['lname']) ?> (<?= $dup['cnt'] ?>x)<?= $dup !== end($duplicates) ? ', ' : '' ?>
+    <?php endforeach; ?>
+    — edit these in <a href="/admin/specimens">Specimens</a> to make names unique.
+</div>
+<?php endif; ?>
+
 <div class="section">
     <div class="section-header">
         <h3>Recently Updated</h3>
