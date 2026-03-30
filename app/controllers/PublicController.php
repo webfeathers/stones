@@ -14,7 +14,7 @@ class PublicController
     {
         $config = require __DIR__ . '/../config.php';
         $page = currentPage();
-        $perPage = $config['per_page'];
+        $perPage = 100;
 
         // Check for active filters
         $filters = [];
@@ -56,7 +56,7 @@ class PublicController
         $config = require __DIR__ . '/../config.php';
         $query = trim($_GET['q'] ?? '');
         $page = currentPage();
-        $perPage = $config['per_page'];
+        $perPage = 100;
 
         $result = ['items' => [], 'total' => 0];
         if (!empty($query)) {
