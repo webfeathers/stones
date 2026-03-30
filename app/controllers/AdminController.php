@@ -138,7 +138,7 @@ class AdminController
         }
 
         // Check for duplicate name
-        $sql = 'SELECT id FROM specimens WHERE name = ?';
+        $sql = 'SELECT id FROM specimens WHERE LOWER(name) = LOWER(?)';
         $params = [$data['name']];
         if ($id) {
             $sql .= ' AND id != ?';
@@ -230,6 +230,27 @@ class AdminController
         Specimen::delete($id);
         flash('success', 'Specimen deleted.');
         redirect('/admin/specimens');
+    }
+
+    public static function specimenCheckName(): void
+    {
+        Auth::requireLogin();
+
+        $name = trim($_GET['name'] ?? '');
+        $excludeId = !empty($_GET['exclude']) ? (int)$_GET['exclude'] : null;
+
+        $sql = 'SELECT id FROM specimens WHERE LOWER(name) = LOWER(?)';
+        $params = [$name];
+        if ($excludeId) {
+            $sql .= ' AND id != ?';
+            $params[] = $excludeId;
+        }
+
+        $exists = (bool)Database::fetch($sql, $params);
+
+        header('Content-Type: application/json');
+        echo json_encode(['exists' => $exists]);
+        exit;
     }
 
     public static function specimenPrint(): void

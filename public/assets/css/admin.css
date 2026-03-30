@@ -608,6 +608,19 @@ img { max-width: 100%; height: auto; }
     margin-bottom: 1rem;
 }
 
+/* Name duplicate warning */
+.name-warning {
+    color: var(--color-danger);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.3rem;
+}
+
+.input-error {
+    border-color: var(--color-danger) !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}
+
 /* Pagination */
 .pagination {
     display: flex;

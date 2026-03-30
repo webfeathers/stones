@@ -113,6 +113,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ============================================
+    // Live duplicate name check
+    // ============================================
+    var nameInput = document.getElementById('name');
+    if (nameInput) {
+        var nameTimer = null;
+        var nameWarning = document.createElement('span');
+        nameWarning.className = 'name-warning';
+        nameWarning.style.display = 'none';
+        nameInput.parentNode.appendChild(nameWarning);
+
+        var specimenId = nameInput.closest('form').dataset.specimenId || '';
+
+        nameInput.addEventListener('input', function () {
+            clearTimeout(nameTimer);
+            var val = this.value.trim();
+            if (val.length < 2) {
+                nameWarning.style.display = 'none';
+                nameInput.classList.remove('input-error');
+                return;
+            }
+            nameTimer = setTimeout(function () {
+                var url = '/admin/specimens/check-name?name=' + encodeURIComponent(val);
+                if (specimenId) url += '&exclude=' + specimenId;
+                fetch(url)
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (data.exists) {
+                            nameWarning.textContent = 'A specimen with this name already exists';
+                            nameWarning.style.display = 'block';
+                            nameInput.classList.add('input-error');
+                        } else {
+                            nameWarning.style.display = 'none';
+                            nameInput.classList.remove('input-error');
+                        }
+                    });
+            }, 400);
+        });
+    }
+
+    // ============================================
     // Sortable rows (simple drag-to-reorder)
     // ============================================
     initSortable('.photo-grid.sortable', '.photo-card');

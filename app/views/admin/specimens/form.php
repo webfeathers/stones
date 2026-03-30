@@ -72,7 +72,7 @@ foreach ($fields as $field) {
     </p>
 <?php endif; ?>
 
-<form method="POST" action="<?= $isEdit ? "/admin/specimens/{$specimen['id']}/edit" : '/admin/specimens/create' ?>" class="specimen-form" enctype="multipart/form-data">
+<form method="POST" action="<?= $isEdit ? "/admin/specimens/{$specimen['id']}/edit" : '/admin/specimens/create' ?>" class="specimen-form" enctype="multipart/form-data" data-specimen-id="<?= $isEdit ? $specimen['id'] : '' ?>">
     <?= Auth::csrfField() ?>
 
     <!-- Core fields — always visible -->
