@@ -77,7 +77,7 @@ class AdminController
 
         $page = currentPage();
         $config = require __DIR__ . '/../config.php';
-        $perPage = $config['admin_per_page'];
+        $perPage = $config['admin_per_page'] ?? $config['per_page'];
         $search = trim($_GET['q'] ?? '');
 
         if ($search !== '') {
