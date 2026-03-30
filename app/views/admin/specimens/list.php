@@ -13,6 +13,7 @@
                 <a href="/admin/specimens" class="btn btn-sm">Clear</a>
             <?php endif; ?>
         </form>
+        <a href="/admin/specimens/print" class="btn btn-sm" target="_blank">Print List</a>
         <a href="/admin/specimens/create" class="btn btn-primary">+ Add Specimen</a>
     </div>
 </div>

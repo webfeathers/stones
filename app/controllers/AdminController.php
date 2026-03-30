@@ -220,6 +220,16 @@ class AdminController
         redirect('/admin/specimens');
     }
 
+    public static function specimenPrint(): void
+    {
+        Auth::requireLogin();
+
+        $result = Specimen::paginate(1, 10000, false);
+
+        // Render standalone (no layout)
+        require __DIR__ . '/../views/admin/specimens/print.php';
+    }
+
     // ============================================
     // Photos
     // ============================================
